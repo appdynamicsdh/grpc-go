@@ -58,11 +58,11 @@ func main() {
 	cfg.AppName = "gRPCTest"
 	cfg.TierName = "goServerTier"
 	cfg.NodeName = "goServerTier1"
-	cfg.Controller.Host = ""
-	cfg.Controller.Port = 8080
-	cfg.Controller.UseSSL = true
+	cfg.Controller.Host = "localhost"
+	cfg.Controller.Port = 32774
+	cfg.Controller.UseSSL = false
 	cfg.Controller.Account = "customer1"
-	cfg.Controller.AccessKey = "secret"
+	cfg.Controller.AccessKey = "SJ5b2m7d1$354"
 	cfg.InitTimeoutMs = 1000 // Wait up to 1s for initialization to finish
 	if err := appd.InitSDK(&cfg); err != nil {
 		fmt.Printf("Error initializing the AppDynamics SDK\n")
