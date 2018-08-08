@@ -19,21 +19,20 @@
 package main
 
 import (
-	"log"
-	"os"
-	"time"
 	appd "appdynamics"
+	"fmt"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	pb "google.golang.org/grpc/examples/helloworld/helloworld"
-	"fmt"
 	"google.golang.org/grpc/metadata"
+	"log"
+	"os"
+	"time"
 )
 
 const (
 	address     = "localhost:20050"
 	defaultName = "world"
-
 )
 
 func main() {
@@ -47,7 +46,7 @@ func main() {
 	cfg.Controller.UseSSL = true
 	cfg.Controller.Account = "customer1"
 	cfg.Controller.AccessKey = "secret"
-	cfg.InitTimeoutMs = 1000  // Wait up to 1s for initialization to finish
+	cfg.InitTimeoutMs = 1000 // Wait up to 1s for initialization to finish
 
 	if err := appd.InitSDK(&cfg); err != nil {
 		fmt.Printf("Error initializing the AppDynamics SDK\n")
@@ -55,13 +54,11 @@ func main() {
 		fmt.Printf("Initialized AppDynamics SDK successfully\n")
 	}
 
-
 	// start the "Checkout" transaction
 	btHandle := appd.StartBT("Checkout", "")
 
 	inventoryEcHandle := appd.StartExitcall(btHandle, "Inventory DB")
 	hdr := appd.GetExitcallCorrelationHeader(inventoryEcHandle)
-
 
 	// Set up a connection to the server.
 	conn, err := grpc.Dial(address, grpc.WithInsecure())
@@ -87,7 +84,6 @@ func main() {
 		log.Fatalf("could not greet: %v", err)
 	}
 	log.Printf("Greeting: %s", r.Message)
-
 
 	// set the exit call details
 	if err := appd.SetExitcallDetails(inventoryEcHandle, "Exitcall Detail String"); err != nil {

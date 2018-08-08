@@ -21,15 +21,15 @@
 package main
 
 import (
-	"log"
-	"net"
 	appd "appdynamics"
+	"fmt"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	pb "google.golang.org/grpc/examples/helloworld/helloworld"
-	"google.golang.org/grpc/reflection"
-	"fmt"
 	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/reflection"
+	"log"
+	"net"
 )
 
 const (
@@ -56,20 +56,19 @@ func main() {
 	cfg := appd.Config{}
 
 	cfg.AppName = "gRPCTest"
-	cfg.TierName = "goClientTier"
-	cfg.NodeName = "goClientTier1"
+	cfg.TierName = "goServerTier"
+	cfg.NodeName = "goServerTier1"
 	cfg.Controller.Host = ""
 	cfg.Controller.Port = 8080
 	cfg.Controller.UseSSL = true
 	cfg.Controller.Account = "customer1"
 	cfg.Controller.AccessKey = "secret"
-	cfg.InitTimeoutMs = 1000  // Wait up to 1s for initialization to finish
+	cfg.InitTimeoutMs = 1000 // Wait up to 1s for initialization to finish
 	if err := appd.InitSDK(&cfg); err != nil {
 		fmt.Printf("Error initializing the AppDynamics SDK\n")
 	} else {
 		fmt.Printf("Initialized AppDynamics SDK successfully\n")
 	}
-
 
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
