@@ -34,7 +34,7 @@ import (
 )
 
 const (
-	address     = "localhost:20050"
+	address     = "localhost:20000"
 	defaultName = "world"
 )
 
@@ -42,8 +42,8 @@ func main() {
 	cfg := appd.Config{}
 
 	cfg.AppName = "gRPCTest"
-	cfg.TierName = "goClientTier"
-	cfg.NodeName = "goClientTier1"
+	cfg.TierName = "goToJavaClientTier"
+	cfg.NodeName = "goToJavaClientTier1"
 	cfg.Controller.Host = "localhost"
 	cfg.Controller.Port = 32774
 	cfg.Controller.UseSSL = false
@@ -57,11 +57,11 @@ func main() {
 		fmt.Printf("Initialized AppDynamics SDK successfully\n")
 	}
 
-	backendName := "GRPC Go To Go"
+	backendName := "GRPC Go To Java"
 	backendType := "HTTP"
 	backendProperties := map[string]string{
 		"HOST": "localhost",
-		"PORT": "20020",
+		"PORT": "20000",
 	}
 	resolveBackend := true
 	appd.AddBackend(backendName, backendType, backendProperties, resolveBackend)
@@ -70,7 +70,7 @@ func main() {
 		time.Sleep(1000 * time.Millisecond)
 
 		// start the "Checkout" transaction
-		btHandle := appd.StartBT("Checkout", "")
+		btHandle := appd.StartBT("Network Connect", "")
 
 		// Set up a connection to the server.
 		conn, err := grpc.Dial(address, grpc.WithInsecure())
