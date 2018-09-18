@@ -1,64 +1,37 @@
-gRPC in 3 minutes (Go)
-======================
+Install the Go SDK.
 
-BACKGROUND
--------------
-For this sample, we've already generated the server and client stubs from [helloworld.proto](helloworld/helloworld/helloworld.proto).
+The Go agent must be downloaded from the http://download.appdynamics.com site.
+Go Agent Supported Platforms
+Operating Systems
+•	Any Linux distribution based on glibc 2.5+.
+•	Alpine Linux uses musl_libc. See https://wiki.alpinelinux.org/wiki/Running_glibc_programs for guidance on installing our agent on Alpine Linux.
+Install the AppDynamics Go SDK
+To install the SDK follow these steps:
+1.	Download the Go Agent SDK distribution. 
+2.	Extract the Go SDK ZIP into the Go workspace. 
+When finished installing the Go SDK, you are ready to instrument your Go application using the API.
 
-PREREQUISITES
--------------
+Instructions for using the agent are located here
+https://docs.appdynamics.com/display/PRO45/Using+the+Go+Agent+SDK
 
-- This requires Go 1.6 or later
-- Requires that [GOPATH is set](https://golang.org/doc/code.html#GOPATH)
+There is an example gRPC Go application that supports correlation and has been verified to work located here:
 
-```
-$ go help gopath
-$ # ensure the PATH contains $GOPATH/bin
-$ export PATH=$PATH:$GOPATH/bin
-```
+Client: https://github.com/appdynamicsdh/grpc-go/blob/master/helloworld/greeter_client/main.go
+Server: https://github.com/appdynamicsdh/grpc-go/blob/master/helloworld/greeter_server/main.go
 
-INSTALL
--------
 
-```
-$ go get -u google.golang.org/grpc/examples/helloworld/greeter_client
-$ go get -u google.golang.org/grpc/examples/helloworld/greeter_server
-```
+The key pieces of code you need to pay attention to for correlation to work correctly are these.
 
-TRY IT!
--------
+For the server, the following lines are used to retrieve the correlation header, start and end a BT.
+	md, ok := metadata.FromIncomingContext(ctx)
+	if ok {
+		hdr := md.Get(appd.APPD_CORRELATION_HEADER_NAME)[0]
+		bt := appd.StartBT("Fraud Detection", hdr)
+		appd.EndBT(bt)
+	}
+  
+For the client, the following lines inject the correlation id into the Metadata header:
 
-- Run the server
-
-  ```
-  $ greeter_server &
-  ```
-
-- Run the client
-
-  ```
-  $ greeter_client
-  ```
-
-OPTIONAL - Rebuilding the generated code
-----------------------------------------
-
-1. Install [protobuf compiler](https://github.com/google/protobuf/blob/master/README.md#protocol-compiler-installation)
-
-1. Install the protoc Go plugin
-
-   ```
-   $ go get -u github.com/golang/protobuf/protoc-gen-go
-   ```
-
-1. Rebuild the generated Go code
-
-   ```
-   $ go generate google.golang.org/grpc/examples/helloworld/...
-   ```
-   
-   Or run `protoc` command (with the grpc plugin)
-   
-   ```
-   $ protoc -I helloworld/ helloworld/helloworld.proto --go_out=plugins=grpc:helloworld
-   ```
+		hdr := appd.GetExitcallCorrelationHeader(inventoryEcHandle)
+		ctx = metadata.AppendToOutgoingContext(ctx, appd.APPD_CORRELATION_HEADER_NAME, hdr)
+		r, err := c.SayHello(ctx, &pb.HelloRequest{Name: name})
