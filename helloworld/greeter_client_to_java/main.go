@@ -48,7 +48,7 @@ func main() {
 	cfg.Controller.Port = 32774
 	cfg.Controller.UseSSL = false
 	cfg.Controller.Account = "customer1"
-	cfg.Controller.AccessKey = "SJ5b2m7d1$354"
+	cfg.Controller.AccessKey = ""
 	cfg.InitTimeoutMs = 1000 // Wait up to 1s for initialization to finish
 
 	if err := appd.InitSDK(&cfg); err != nil {
