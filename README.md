@@ -23,15 +23,18 @@ Server: https://github.com/appdynamicsdh/grpc-go/blob/master/helloworld/greeter_
 The key pieces of code you need to pay attention to for correlation to work correctly are these.
 
 For the server, the following lines are used to retrieve the correlation header, start and end a BT.
+```
 	md, ok := metadata.FromIncomingContext(ctx)
 	if ok {
 		hdr := md.Get(appd.APPD_CORRELATION_HEADER_NAME)[0]
 		bt := appd.StartBT("Fraud Detection", hdr)
 		appd.EndBT(bt)
 	}
-  
-For the client, the following lines inject the correlation id into the Metadata header:
+```
 
+For the client, the following lines inject the correlation id into the Metadata header:
+```
 		hdr := appd.GetExitcallCorrelationHeader(inventoryEcHandle)
 		ctx = metadata.AppendToOutgoingContext(ctx, appd.APPD_CORRELATION_HEADER_NAME, hdr)
 		r, err := c.SayHello(ctx, &pb.HelloRequest{Name: name})
+```
