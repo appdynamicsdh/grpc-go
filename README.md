@@ -5,7 +5,9 @@ The Go agent must be downloaded from the http://download.appdynamics.com site.
 Go Agent Supported Platforms
 
 Operating Systems
+
 •	Any Linux distribution based on glibc 2.5+.
+
 •	Alpine Linux uses musl_libc. See https://wiki.alpinelinux.org/wiki/Running_glibc_programs for guidance on installing our agent on Alpine Linux.
 
 
